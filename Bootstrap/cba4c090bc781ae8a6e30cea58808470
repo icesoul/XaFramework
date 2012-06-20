@@ -1,0 +1,82 @@
+<?php 
+$bConfig=new \Xa\Config(array (
+  'login' => 'xacce',
+  'password' => 'asdh329er#*Yehsajd',
+  'host' => 'localhost',
+  'encoding' => 'utf8',
+  'models' => 'Model',
+  'db' => 'xacce',
+  'disable' => false,
+));
+ ?><?php
+
+if (!$bConfig->disable)
+{
+    require __DIR__ . '/../ActiveRecord/Singleton.php';
+    require __DIR__ . '/../ActiveRecord/Config.php';
+    require __DIR__ . '/../ActiveRecord/Utils.php';
+    require __DIR__ . '/../ActiveRecord/DateTime.php';
+    require __DIR__ . '/../ActiveRecord/Model.php';
+    require __DIR__ . '/../ActiveRecord/Table.php';
+    require __DIR__ . '/../ActiveRecord/ConnectionManager.php';
+    require __DIR__ . '/../ActiveRecord/Connection.php';
+    require __DIR__ . '/../ActiveRecord/SQLBuilder.php';
+    require __DIR__ . '/../ActiveRecord/Reflections.php';
+    require __DIR__ . '/../ActiveRecord/Inflector.php';
+    require __DIR__ . '/../ActiveRecord/CallBack.php';
+    require __DIR__ . '/../ActiveRecord/Exceptions.php';
+    require __DIR__ . '/../ActiveRecord/Cache.php';
+    
+    
+    \ActiveRecord\Config::initialize(function($cfg) use ($bConfig)
+            {
+                if (isset($bConfig->configure))
+                {
+                    foreach ($bConfig->configure as $cb)
+                    {
+                        call_user_func($cb, $cfg);
+                    }
+                }
+                $cfg->set_model_directory($bConfig->models);
+                $cfg->set_connections(array('development' => 'mysql://' . $bConfig->login . ':' . $bConfig->password . '@' . $bConfig->host . '/' . $bConfig->db));
+            });
+
+
+
+ 
+    \ActiveRecord\ConnectionManager::get_connection()->query("SET NAMES '{$bConfig->encoding}';");
+}
+?><?php 
+$bConfig=new \Xa\Config(array (
+));
+ ?><?php
+
+/* $logger = Xa\Registry::set('Logger', new Xa\Logger());
+  $logger->setLogFile($bConfig->logFile);
+  $logger->setLogViewFile($bConfig->logViewFile);
+  set_error_handler(array($logger, 'systemErrorHandler'));
+  set_exception_handler(array($logger, 'systemExceptionHandler')); */
+
+$handler = new Xa\ErrorHandler(new \Xa\View(Xa\AP . 'Xa/View/error'));
+\Xa\Registry::set('Debug', $handler);
+set_error_handler(array($handler, 'error'));
+set_exception_handler(array($handler, 'exception'));
+
+?>
+<?php 
+$bConfig=new \Xa\Config(array (
+  'charset' => 'utf-8',
+  'timezone' => 'Europe/Moscow',
+  'site' => 'xacce.ru',
+));
+ ?><?php
+
+session_start();
+mb_internal_encoding($bConfig->charset);
+header('Content-Type: text/html; charset=' . $bConfig->charset);
+date_default_timezone_set($bConfig->timezone);
+setlocale(LC_ALL, 'ru_RU');
+define('Xa\SITE', 'http://' . $bConfig->site . '/');
+define('Xa\CSITE', 'http://' . $bConfig->site);
+define('Xa\SITEWWW', 'http://www.' . $bConfig->site . '/');
+?>
