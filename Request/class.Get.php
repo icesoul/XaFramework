@@ -2,15 +2,15 @@
 
 namespace Xa\Request;
 
-class Get extends Base
+class Get extends Base implements  \Xa\Request\Interfaces\Get
 {
 
-    protected static $_data = array();
-    protected static $_type = 'get';
+    protected $_data = array();
+    protected $_type = 'get';
 
-    public static function build(array $arr=array())
+    public function __construct()
     {
-        static::$_data = $arr ? : $_GET;
+        $this->_data = $_GET;
     }
 
 }

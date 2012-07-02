@@ -5,12 +5,12 @@ namespace Xa\Request;
 class Post extends Base
 {
 
-    protected static $_data = array();
-    protected static $_type = 'post';
+    protected  $_data = array();
+    protected  $_type = 'post';
 
-    public static function build()
+    public  function __construct()
     {
-        static::$_data = $_POST;
+        $this->_data = $_POST;
     }
 
 }

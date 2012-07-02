@@ -70,8 +70,8 @@ function fileExistsByNamespace($namespace, $preff = 'class.')
 function absolutePathToNamespace($path)
 {
     return str_replace('/', '\\', '/' . substr(str_replace(array(
-                                                                'class.', '.php'
-                                                           ), '', $path), strlen(Xa\AP)));
+        'class.', '.php'
+    ), '', $path), strlen(Xa\AP)));
 }
 
 function arrayToHtmlAttrs(array $options)
@@ -79,18 +79,22 @@ function arrayToHtmlAttrs(array $options)
     $string = null;
     foreach ($options as $name => $value)
     {
-        if ($value === false) {
+        if ($value === false)
+        {
             continue;
         }
 
-        if ($value === true) {
+        if ($value === true)
+        {
             $string .= " $name";
         }
-        elseif (\is_string((string)$value) or \is_object($value)) {
+        elseif (\is_string((string)$value) or \is_object($value))
+        {
             $string .= ' ' . $name . "=\"$value\"";
         }
 
-        elseif (is_array($value)) {
+        elseif (is_array($value))
+        {
             $string .= ' ' . $name . '="' . \json_encode($value) . '"';
         }
     }
@@ -170,7 +174,8 @@ function impdiff($d1, $d2, array $forms = array(
         if ($interval[1] == 0)
         {
 
-            if ($interval[2] == 0) {
+            if ($interval[2] == 0)
+            {
                 return $interval[3] . ' ' . plural($interval[3], $forms['second']);
             }
             else

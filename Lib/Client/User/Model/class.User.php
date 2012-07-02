@@ -4,19 +4,9 @@ namespace Xa\Lib\Client\User\Model;
 
 class User extends \ActiveRecord\Model
 {
-    static $has_many = array(
-        array(
-            'uf',
-            'class_name' => '\Xa\Lib\Client\User\Model\Uf'
-        ),
-        array(
-            'fields',
-            'class_name' => '\Xa\Lib\Client\User\Model\Field',
-            'through' => 'uf',
-            'select' => 'fields.*,value'
-        )
-    );
+
     static $before_save = array('checkVname');
+
     static $validates_presence_of = array(
         array('login'),
         array('vname'),
@@ -24,9 +14,11 @@ class User extends \ActiveRecord\Model
         array('password'),
         array('role_id'),
     );
+
     static $validates_numericality_of = array(
         array('role_id')
     );
+
     static $validates_size_of = array(
         array(
             'login',
@@ -63,11 +55,14 @@ class User extends \ActiveRecord\Model
             'with' => '/^[^0-9][A-z0-9_]+([.][A-z0-9_]+)*[@][A-z0-9_]+([.][A-z0-9_]+)*[.][A-z]{2,4}$/'
         ),
     );
+
+
     static $validates_uniqueness_of = array(
         array('login'),
         array('vname'),
         array('email')
     );
+
 
     public function checkVname()
     {
@@ -82,18 +77,11 @@ class User extends \ActiveRecord\Model
     {
         if (!empty($pass))
         {
-            $this->assign_attribute('password', Xa\Lib\Client\Authorization\Sql\Auth::cryptPwd($pass));
+            $this->assign_attribute('password', \Xa\Lib\Client\User\Password::create($pass));
         }
     }
 
 
-    //FIXME remove suppressedstorage
-    public function fields()
-    {
-        $this->assign_attribute('fields', new \Xa\Helper\SuppressedStorage(modelsToAssociativeArray($this->fields)));
-
-        return $this;
-    }
 }
 
 ?>

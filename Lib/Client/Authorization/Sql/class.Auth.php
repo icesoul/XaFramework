@@ -77,9 +77,9 @@ class Auth
         if (!empty($_SESSION['auth']))
         {
             $user = $model::__callStatic('find_by_' . static::sessionField . '_and_' . static::ipField, array(
-                                                                                                             session_id(),
-                                                                                                             ip2int($this->_ip)
-                                                                                                        ));
+                session_id(),
+                ip2int($this->_ip)
+            ));
             if ($user)
             {
                 $this->_user = $user;
@@ -114,7 +114,6 @@ class Auth
             $this->clear();
             return false;
         }
-
         $this->_auth = true;
         $this->_user->{static::onlineField} = true;
         $this->_user->{static::sessionField} = session_id();

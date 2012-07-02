@@ -8,22 +8,12 @@ class Callback
     protected $_callbacks = array();
     protected $_installed = array();
 
-    public function __construct ()
+    public function __construct()
     {
-        $cache = Registry::Cache();
-        //$this->_installed = $cache->get('preInstalledCallbacks');
-        /* if ($this->_installed === false)
-          { */
-        $this->_installed = array();
-        foreach (glob(__DIR__ . '/Callbacks/*.php') as $event)
-        {
-            $this->_installed[basename($event, '.php')] = true;
-        }
-        // $cache->set('preInstalledCallbacks', $this->_installed, 60);
-        //}
+
     }
 
-    public function invoke ($event, array $attrs = array())
+    public function invoke($event, array $attrs = array())
     {
         if (isset($this->_callbacks[$event]))
         {
@@ -36,9 +26,8 @@ class Callback
         return $this;
     }
 
-    // public function
 
-    public function moreInvoke (array $events, array $attrs = array())
+    public function moreInvoke(array $events, array $attrs = array())
     {
         foreach ($events as $event)
         {
@@ -48,7 +37,7 @@ class Callback
         return $this;
     }
 
-    public function register ($event, $callback)
+    public function register($event, $callback)
     {
         if (isset($this->_callbacks[$event]))
         {
@@ -62,18 +51,18 @@ class Callback
         return $this;
     }
 
-    public function handlersIsExists ($event)
+    public function handlersIsExists($event)
     {
         return isset($this->_callbacks[$event]);
     }
 
-    public function save2File ($event, $callback)
+    public function save2File($event, $callback)
     {
         $st = new CallbackStorage($event);
         $st->add($callback);
     }
 
-    public function callFromFileStorage ($event, array $attrs = array())
+    public function callFromFileStorage($event, array $attrs = array())
     {
         if (isset($this->_installed[$event]))
         {
@@ -86,7 +75,7 @@ class Callback
         return $this;
     }
 
-    public function __set ($event, $callback)
+    public function __set($event, $callback)
     {
         $this->register($event, $callback);
     }

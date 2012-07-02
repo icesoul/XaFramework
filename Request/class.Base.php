@@ -13,26 +13,26 @@ abstract class Base
     const basestring = '/^[a-zA-Zа-яА-Я0-9-_ \!\?\&;\.,]+$/u';
     const email = '/^[A-z0-9_\-\.]+\@[A-z0-9_-]+\.[A-z]{2,4}$/';
 
-    protected static $_data = array();
+    protected $_data = array();
 
     /**
      *
      * @param string $index
      * @return \Core\RequestSpeller
      */
-    public static function g ($index)
+    public function g($index)
     {
-        return new Speller(isset(static::$_data[$index]) ? static::$_data[$index] : '', $index);
+        return new Speller(isset($this->_data[$index]) ? $this->_data[$index] : '', $index);
     }
 
-    public static function gAsArray ($index, $handler = null)
+    public function gAsArray($index, $handler = null)
     {
         $data = array();
-        if (isset(static::$_data[$index]) and \is_array(static::$_data[$index]))
+        if (isset($this->_data[$index]) and \is_array($this->_data[$index]))
         {
-            $type = static::$_type;
+            $type = $this->_type;
 
-            $data = static::$_data[$index];
+            $data = $this->_data[$index];
             /* \array_walk_recursive(&$data, function(&$v, $key) use ($index, $type, $handler)
               {
               $v = new Speller($v, $key, $type);
@@ -41,72 +41,74 @@ abstract class Base
 
               $to = array(); */
             $b = function($arr) use (&$b, $handler, $type)
+            {
+                $return = array();
+                foreach ($arr as $key => $val)
+                {
+                    if (is_array($val))
                     {
-                        $return = array();
-                        foreach ($arr as $key => $val)
-                        {
-                            if (is_array($val))
-                            {
-                                $return[$key] = $b($val);
-                            }
-                            else
-                            {
-                                $v = new Speller($val, $key, $type);
-                                $return[$key] = $handler ? call_user_func($handler, $v) : $v;
-                            }
-                        }
+                        $return[$key] = $b($val);
+                    }
+                    else
+                    {
+                        $v = new Speller($val, $key, $type);
+                        $return[$key] = $handler ? call_user_func($handler, $v) : $v;
+                    }
+                }
 
-                        return $return;
-                    };
+                return $return;
+            };
 
-            $to = $b(static::$_data[$index]);
+            $to = $b($this->_data[$index]);
             return $to;
 
         }
         throw new \Exception('Index ' . $index . ' not found');
     }
 
-    public static function totality (array $indexes)
+    public function totality(array $indexes)
     {
         foreach ($indexes as $index)
         {
-            if ( ! \array_key_exists($index, static::$_data))
+            if (!\array_key_exists($index, $this->_data))
+            {
                 return false;
+            }
         }
 
         return true;
     }
 
-    public static function exists ($index)
+    public function exists($index)
     {
-        return \array_key_exists($index, static::$_data);
+        return \array_key_exists($index, $this->_data);
     }
 
-    public static function isEmpty ($index)
+    public function isEmpty($index)
     {
-        return empty(static::$_data[$index]);
+        return empty($this->_data[$index]);
     }
 
-    public static function getAll ()
+    public function getAll()
     {
-        return static::$_data;
+        return $this->_data;
     }
 
-    public static function s ($index, $value)
+    public function s($index, $value)
     {
-        static::$_data[$index] = $value;
+        $this->_data[$index] = $value;
     }
 
-    public static function sArray ($data)
+    public function sArray($data)
     {
-        static::$_data = array_merge(static::$_data, $data);
+        $this->_data = array_merge($this->_data, $data);
     }
 
-    public static function destroy ($index)
+    public function destroy($index)
     {
-        if (isset(static::$_data[$index]))
+        if (isset($this->_data[$index]))
         {
-            unset(static::$_data[$index]);
+            unset($this->_data[$index]);
         }
     }
 

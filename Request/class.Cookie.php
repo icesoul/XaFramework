@@ -5,17 +5,16 @@ namespace Xa\Request;
 class Cookie extends Base
 {
 
-    protected static $_data = array();
-    protected static $_type = 'cookie';
+    protected  $_data = array();
+    protected  $_type = 'cookie';
 
-    public static function build()
+    public function __construct()
     {
-
-        static::$_data = $_COOKIE;
+        $this->_data = $_COOKIE;
     }
 
 
-    public static function s($index, $value)
+    public  function s($index, $value)
     {
         return;
     }

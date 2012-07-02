@@ -2,11 +2,7 @@
 
 namespace Xa;
 
-/**
- * При указании не обязательных параметров в методе-котроллере рефлекшн работает только если опциональные параметры стоят в конце.
- *
- *
- */
+
 abstract class Controller
 {
 
@@ -16,26 +12,26 @@ abstract class Controller
     static $_beforeUrl;
 
     /**
-     * 
-     * @var \Xa\View 
+     *
+     * @var \Xa\View
      */
     protected $_view;
     protected $_handler;
     protected $_called;
 
-    public function preroute ($handler)
+    public function preroute($handler)
     {
         $this->_handler = $handler;
         $this->_called = get_called_class();
         if (static::autoloadView)
         {
             $this->_view = new View();
-            $this->_view->setTemplate(dirname(Registry::Layout()->getTemplate()) . (static::$_alias !== false ? '/' . static::$_alias : namespace2RDir(get_called_class()) . '/' . getClass(get_called_class()) . '/') . $handler);
-            Registry::Layout()->setContent($this->_view);
+            //  $this->_view->setTemplate(dirname(Registry::Layout()->getTemplate()) . (static::$_alias !== false ? '/' . static::$_alias : namespace2RDir(get_called_class()) . '/' . getClass(get_called_class()) . '/') . $handler);
+            //Registry::Layout()->setContent($this->_view);
         }
     }
 
-    public function stop ($error = null)
+    public function stop($error = null)
     {
 
         Registry::Callback()->moreInvoke(array('controllerStopped', get_called_class() . '_Stopped'), array($error));
@@ -46,7 +42,7 @@ abstract class Controller
         exit();
     }
 
-    public static function __callStatic ($func, array $args = array())
+    public static function __callStatic($func, array $args = array())
     {
         $namespace = get_called_class();
         $query = null;
@@ -62,9 +58,6 @@ abstract class Controller
         $params = $reflector->getMethod('controller_' . $controller)->getParameters();
 
 
-
-
-
         foreach ($params as $name => $param)
         {
             $name = $param->name;
@@ -72,18 +65,18 @@ abstract class Controller
             $isEmpty = empty($args[$name]);
 
 
-            if ($isEmpty and ! $canEmpty)
+            if ($isEmpty and !$canEmpty)
             {
                 return null;
                 //throw new Exceptions\ControllerParamError('Param ' . $param->name . ' cant be empty');
             }
-            elseif ( ! $isEmpty)
+            elseif (!$isEmpty)
             {
                 $query .= $args[$name] . '/';
             }
             else
             {
-                $query.= '/';
+                $query .= '/';
             }
         }
         ;
@@ -95,11 +88,15 @@ abstract class Controller
         return CSITE . ($prepost == '/' ? null : $prepost) . '/' . $controller . '/' . $query . $args['~'];
     }
 
-    public function getHandler ()
+    public function getHandler()
     {
         return $this->_handler;
     }
 
+    public static function create()
+    {
+        return IoC\Factory::create(get_called_class(), func_get_args());
+    }
 }
 
 ?>

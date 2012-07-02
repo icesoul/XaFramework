@@ -5,17 +5,17 @@ namespace Xa\Lib\Client\Access\Xa;
 class Area51 extends Access
 {
 
-    public function __construct ()
+    public function __construct()
     {
-        
+
     }
 
-    public function allow ($action)
+    public function allow($action)
     {
         return false;
     }
 
-    public function deny ($action)
+    public function deny($action)
     {
         return true;
     }
