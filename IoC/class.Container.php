@@ -67,6 +67,7 @@ class Container
             throw new Exception\UnknownType('Unknown type of object.');
         }
 
+
         $this->assoc($assoc, $interfaces);
     }
 
@@ -98,8 +99,11 @@ class Container
         }
 
         foreach ($interfaces as $interface) {
+            //var_dump($interface);
             $this->container[$interface] = $assoc;
         }
+
+
     }
 
     /**

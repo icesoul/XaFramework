@@ -17,8 +17,24 @@ class Core
         define('Xa', true);
         define('Xa\DR', DIRECTORY_SEPARATOR);
         define('Xa\AP', str_replace("\\", '/', getcwd()) . '/');
-        define('Xa\SITE', 'http://192.168.1.43/xadevel/');
-        define('Xa\CSITE', 'http://192.168.1.43/xadevel/');
+
+
+        // header('Content-Type: text/html; charset=' . $bConfig->charset);
+        // date_default_timezone_set($bConfig->timezone);
+        // setlocale(LC_ALL, 'ru_RU');
+
+
+        $domain = $_SERVER['SERVER_NAME'];
+        $xaPath = $this->getRoot();
+        $root = $_SERVER['DOCUMENT_ROOT'];
+        $subfolder = substr($xaPath, strpos($xaPath, $root) + strlen($root));
+
+        define('Xa\SITE', 'http://' . $domain . $subfolder . '/');
+        define('Xa\SubFolder', $subfolder);
+        define('Xa\DOMAIN', $domain);
+        define('Xa\CSITE', 'http://' . $domain . $subfolder);
+        define('Xa\SITEWWW', 'http://www.' . $domain . '/' . $subfolder . '/');
+
 
         require __DIR__ . '/common.php';
 
@@ -28,11 +44,12 @@ class Core
         $ioc->register(new Request\Get());
         $ioc->register(new Request\Post());
         $ioc->register(new Request\Cookie());
-        $ioc->register($r = Router::create(), 'Router');
+        $ioc->register(new Request\File());
+        $ioc->register(new Callback());
+        $ioc->register(Router::create());
         $ioc->register(Response::create());
         $ioc->register(new Callback());
-
-
+        $ioc->register(new Messager());
     }
 
 
@@ -42,8 +59,9 @@ class Core
         $bootstrap = __DIR__ . '/../Cfg/';
         foreach (new \DirectoryIterator($bootstrap) as $cfgFile)
         {
+
             $filename = $cfgFile->getPath() . '/' . $cfgFile->getFilename();
-            $cfgFor = basename($filename, '.php');
+            $cfgFor = basename(str_replace('!', '', $filename), '.php');
             if (is_file($filename) && file_exists($bFile = __DIR__ . '/Bootstrap/bootstrap.' . $cfgFor . '.php'))
             {
                 $bConfig = include($filename);
@@ -54,6 +72,10 @@ class Core
 
     }
 
+    public function getRoot()
+    {
+        return dirname(__DIR__);
+    }
     /*
         public static function setMainLayout($path)
         {

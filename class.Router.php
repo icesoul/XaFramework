@@ -101,9 +101,15 @@ class Router implements \Xa\Interfaces\Router
         }
 
         // Registry::Callback()->invoke('beforeCreateControllerClass', array(&$prepost, &$parts, &$handler, $dest));
-        $this->_controller = $dest['controller']::create();
-        if (method_exists($this->_controller, 'controller_' . $handler))
+
+        $reflector = new \ReflectionClass($dest['controller']);
+
+        if ($reflector->hasMethod('controller_' . $handler))
         {
+            $this->_current = $dest;
+            $this->_handler = $handler;
+
+            $this->_controller = $dest['controller']::create();
             $reflector = new \ReflectionClass($dest['controller']);
             $q = $reflector->getMethod('controller_' . $handler)->getParameters();
 
@@ -118,10 +124,10 @@ class Router implements \Xa\Interfaces\Router
                 }
 
                 $this->Get->s($param->name, !empty($parts[$i]) ? $parts[$i] : null);
-                $attributes[] = Request\Get::g($param->name);
+                $attributes[] = $this->Get->g($param->name);
             }
-            $this->_current = $dest;
-            $this->_handler = $handler;
+
+
             $this->_controller->preroute($handler);
             // Registry::Callback()->invoke('beforeCallControllerHandler', array(&$prepost, &$parts, &$handler, $dest));
             call_user_func_array(array($this->_controller, 'controller_' . $handler), $attributes);
@@ -150,6 +156,7 @@ class Router implements \Xa\Interfaces\Router
 
     public function getHandler()
     {
+
         return $this->_handler;
     }
 

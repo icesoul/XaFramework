@@ -1,6 +1,6 @@
 <?php
 
-session_start();
+//session_start();
 mb_internal_encoding($bConfig->charset);
 header('Content-Type: text/html; charset=' . $bConfig->charset);
 date_default_timezone_set($bConfig->timezone);
@@ -14,6 +14,8 @@ $subfolder = substr($xaPath, strpos($xaPath, $root) + strlen($root));
 
 
 define('Xa\SITE', 'http://' . $domain . '/' . $subfolder . '/');
+define('Xa\SubFolder', $subfolder);
+define('Xa\DOMAIN', $domain);
 define('Xa\CSITE', 'http://' . $domain . '/' . $subfolder);
 define('Xa\SITEWWW', 'http://www.' . $domain . '/' . $subfolder . '/');
 

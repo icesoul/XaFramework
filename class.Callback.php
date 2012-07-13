@@ -2,7 +2,7 @@
 
 namespace Xa;
 
-class Callback
+class Callback implements \Xa\Interfaces\Callback
 {
 
     protected $_callbacks = array();
@@ -54,25 +54,6 @@ class Callback
     public function handlersIsExists($event)
     {
         return isset($this->_callbacks[$event]);
-    }
-
-    public function save2File($event, $callback)
-    {
-        $st = new CallbackStorage($event);
-        $st->add($callback);
-    }
-
-    public function callFromFileStorage($event, array $attrs = array())
-    {
-        if (isset($this->_installed[$event]))
-        {
-            foreach (include(__DIR__ . '/Callbacks/' . $event . '.php') as $callback)
-            {
-                $result = call_user_func_array($callback, $attrs);
-            }
-        }
-
-        return $this;
     }
 
     public function __set($event, $callback)

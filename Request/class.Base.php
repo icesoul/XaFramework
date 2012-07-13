@@ -52,6 +52,7 @@ abstract class Base
                     else
                     {
                         $v = new Speller($val, $key, $type);
+                        $v->safe();
                         $return[$key] = $handler ? call_user_func($handler, $v) : $v;
                     }
                 }

@@ -19,6 +19,8 @@ abstract class Controller
     protected $_handler;
     protected $_called;
 
+    public $Router;
+
     public function preroute($handler)
     {
         $this->_handler = $handler;
@@ -44,10 +46,11 @@ abstract class Controller
 
     public static function __callStatic($func, array $args = array())
     {
+
         $namespace = get_called_class();
         $query = null;
         $args = $args ? $args[0] : array();
-        $args['~'] = isset($argc['~']) ? : null;
+        $args['~'] = isset($args['~']) ? $args['~'] : null;
         if ($func[0] == 'j')
         {
             $func = substr($func, 1);
@@ -61,12 +64,16 @@ abstract class Controller
         foreach ($params as $name => $param)
         {
             $name = $param->name;
+
+
+
             $canEmpty = $param->isDefaultValueAvailable();
             $isEmpty = empty($args[$name]);
 
 
             if ($isEmpty and !$canEmpty)
             {
+
                 return null;
                 //throw new Exceptions\ControllerParamError('Param ' . $param->name . ' cant be empty');
             }
@@ -80,7 +87,7 @@ abstract class Controller
             }
         }
         ;
-        if ($ctrlData = Registry::Router()->getByController('\\' . $namespace))
+        if ($ctrlData =  \Xa\IoC\Container::getInstance()->getObject('Xa\Interfaces\Router')->getByController('\\' . $namespace))
         {
             $prepost = $ctrlData['prepost'];
         }

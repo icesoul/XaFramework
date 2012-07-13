@@ -18,7 +18,7 @@ class Response implements \Xa\Interfaces\Response
 
     public function refresh()
     {
-        $url = $_SERVER['REQUEST_URI'];
+        $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
         $p = strpos($url, '?');
         $url = $p ? substr($url, 0, $p) : $url;
 
@@ -27,7 +27,7 @@ class Response implements \Xa\Interfaces\Response
 
     public function error($code)
     {
-        $er = '\Xa\Router::HTTP_' . $code;
+        $er = '\Xa\Response::HTTP_' . $code;
 
         header("HTTP/1.1 $code " . constant($er));
         header("Status: $code " . constant($er));
@@ -45,7 +45,7 @@ class Response implements \Xa\Interfaces\Response
 
     public function output($out)
     {
-        echo $out;
+        echo is_a($out, '\Xa\Interfaces\View') ? $out->render() : $out;
     }
 
 

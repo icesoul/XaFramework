@@ -2,7 +2,7 @@
 
 namespace Xa;
 
-class View
+class View implements \Xa\Interfaces\View
 {
 
     const ext = '.php';
@@ -31,6 +31,8 @@ class View
         $this->data = $data;
         $this->data['onload'] = array();
     }
+
+
 
     /**
      * Return template path
@@ -109,9 +111,9 @@ class View
         foreach (func_get_args() as $index)
         {
             if (isset($this->data[$index]))
-                    {
-                        unset($this->data[$index]);
-                    }
+            {
+                unset($this->data[$index]);
+            }
         }
         return $this;
     }
@@ -162,7 +164,9 @@ class View
         $out = array();
 
         if (!$data = $this->_public)
+        {
             return array();
+        }
 
         $source = $this->data;
 

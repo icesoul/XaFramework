@@ -1,7 +1,6 @@
 <?php
 
 /**
- *
  * @package ActiveRecord
  */
 /*
@@ -37,26 +36,32 @@ namespace ActiveRecord;
 
 use \Closure;
 
-function classify ($class_name, $singularize = false)
+function classify($class_name, $singularize = false)
 {
     if ($singularize)
+    {
         $class_name = Utils::singularize($class_name);
+    }
 
     $class_name = Inflector::instance()->camelize($class_name);
     return ucfirst($class_name);
 }
 
 // http://snippets.dzone.com/posts/show/4660
-function array_flatten (array $array)
+function array_flatten(array $array)
 {
     $i = 0;
 
     while ($i < count($array))
     {
         if (is_array($array[$i]))
+        {
             array_splice($array, $i, 1, $array[$i]);
+        }
         else
-             ++ $i;
+        {
+            ++$i;
+        }
     }
     return $array;
 }
@@ -64,10 +69,12 @@ function array_flatten (array $array)
 /**
  * Somewhat naive way to determine if an array is a hash.
  */
-function is_hash (&$array)
+function is_hash(&$array)
 {
-    if ( ! is_array($array))
+    if (!is_array($array))
+    {
         return false;
+    }
 
     $keys = array_keys($array);
     return @is_string($keys[0]) ? true : false;
@@ -75,15 +82,16 @@ function is_hash (&$array)
 
 /**
  * Strips a class name of any namespaces and namespace operator.
- *
  * @param string $class
  * @return string stripped class name
  * @access public
  */
-function denamespace ($class_name)
+function denamespace($class_name)
 {
     if (is_object($class_name))
+    {
         $class_name = get_class($class_name);
+    }
 
     if (has_namespace($class_name))
     {
@@ -93,17 +101,21 @@ function denamespace ($class_name)
     return $class_name;
 }
 
-function get_namespaces ($class_name)
+function get_namespaces($class_name)
 {
     if (has_namespace($class_name))
+    {
         return explode('\\', $class_name);
+    }
     return null;
 }
 
-function has_namespace ($class_name)
+function has_namespace($class_name)
 {
     if (strpos($class_name, '\\') !== false)
+    {
         return true;
+    }
     return false;
 }
 
@@ -113,26 +125,32 @@ function has_namespace ($class_name)
  * @param $haystack
  * @return unknown_type
  */
-function all ($needle, array $haystack)
+function all($needle, array $haystack)
 {
     foreach ($haystack as $value)
     {
         if ($value !== $needle)
+        {
             return false;
+        }
     }
     return true;
 }
 
-function collect (&$enumerable, $name_or_closure)
+function collect(&$enumerable, $name_or_closure)
 {
     $ret = array();
 
     foreach ($enumerable as $value)
     {
         if (is_string($name_or_closure))
+        {
             $ret[] = is_array($value) ? $value[$name_or_closure] : $value->$name_or_closure;
+        }
         elseif ($name_or_closure instanceof Closure)
+        {
             $ret[] = $name_or_closure($value);
+        }
     }
     return $ret;
 }
@@ -140,16 +158,20 @@ function collect (&$enumerable, $name_or_closure)
 /**
  * Wrap string definitions (if any) into arrays.
  */
-function wrap_strings_in_arrays (&$strings)
+function wrap_strings_in_arrays(&$strings)
 {
-    if ( ! is_array($strings))
+    if (!is_array($strings))
+    {
         $strings = array(array($strings));
+    }
     else
     {
         foreach ($strings as &$str)
         {
-            if ( ! is_array($str))
+            if (!is_array($str))
+            {
                 $str = array($str);
+            }
         }
     }
     return $strings;
@@ -157,23 +179,24 @@ function wrap_strings_in_arrays (&$strings)
 
 /**
  * Some internal utility functions.
- *
  * @package ActiveRecord
  */
 class Utils
 {
 
-    public static function extract_options ($options)
+    public static function extract_options($options)
     {
         return is_array(end($options)) ? end($options) : array();
     }
 
-    public static function add_condition (&$conditions = array(), $condition, $conjuction = 'AND')
+    public static function add_condition(&$conditions = array(), $condition, $conjuction = 'AND')
     {
         if (is_array($condition))
         {
             if (empty($conditions))
+            {
                 $conditions = array_flatten($condition);
+            }
             else
             {
                 $conditions[0] .= " $conjuction " . array_shift($condition);
@@ -181,12 +204,14 @@ class Utils
             }
         }
         elseif (is_string($condition))
+        {
             $conditions[0] .= " $conjuction $condition";
+        }
 
         return $conditions;
     }
 
-    public static function human_attribute ($attr)
+    public static function human_attribute($attr)
     {
         $inflector = Inflector::instance();
         $inflected = $inflector->variablize($attr);
@@ -195,24 +220,26 @@ class Utils
         return ucfirst(str_replace('_', ' ', $normal));
     }
 
-    public static function is_odd ($number)
+    public static function is_odd($number)
     {
         return $number & 1;
     }
 
-    public static function is_a ($type, $var)
+    public static function is_a($type, $var)
     {
         switch ($type)
         {
             case 'range':
-                if (is_array($var) && (int) $var[0] < (int) $var[1])
+                if (is_array($var) && (int)$var[0] < (int)$var[1])
+                {
                     return true;
+                }
         }
 
         return false;
     }
 
-    public static function is_blank ($var)
+    public static function is_blank($var)
     {
         return 0 === strlen($var);
     }
@@ -291,11 +318,13 @@ class Utils
         'equipment'
     );
 
-    public static function pluralize ($string)
+    public static function pluralize($string)
     {
         // save some time in the case that singular and plural are the same
         if (in_array(strtolower($string), self::$uncountable))
+        {
             return $string;
+        }
 
         // check for irregular singular forms
         foreach (self::$irregular as $pattern => $result)
@@ -303,24 +332,30 @@ class Utils
             $pattern = '/' . $pattern . '$/i';
 
             if (preg_match($pattern, $string))
+            {
                 return preg_replace($pattern, $result, $string);
+            }
         }
 
         // check for matches using regular expressions
         foreach (self::$plural as $pattern => $result)
         {
             if (preg_match($pattern, $string))
+            {
                 return preg_replace($pattern, $result, $string);
+            }
         }
 
         return $string;
     }
 
-    public static function singularize ($string)
+    public static function singularize($string)
     {
         // save some time in the case that singular and plural are the same
         if (in_array(strtolower($string), self::$uncountable))
+        {
             return $string;
+        }
 
         // check for irregular plural forms
         foreach (self::$irregular as $result => $pattern)
@@ -328,33 +363,41 @@ class Utils
             $pattern = '/' . $pattern . '$/i';
 
             if (preg_match($pattern, $string))
+            {
                 return preg_replace($pattern, $result, $string);
+            }
         }
 
         // check for matches using regular expressions
         foreach (self::$singular as $pattern => $result)
         {
             if (preg_match($pattern, $string))
+            {
                 return preg_replace($pattern, $result, $string);
+            }
         }
 
         return $string;
     }
 
-    public static function pluralize_if ($count, $string)
+    public static function pluralize_if($count, $string)
     {
         if ($count == 1)
+        {
             return $string;
+        }
         else
+        {
             return self::pluralize($string);
+        }
     }
 
-    public static function squeeze ($char, $string)
+    public static function squeeze($char, $string)
     {
         return preg_replace("/$char+/", $char, $string);
     }
 
-    public static function joinCondition (&$query, $condition)
+    public static function joinCondition(&$query, $condition)
     {
         $all = false;
 
@@ -365,12 +408,12 @@ class Utils
         }
 
         $query = isset($query[0]) ? $query[0] : array();
-        if (isset($query) && ! is_array($query) && ! is_array($query[0]))
+        if (isset($query) && !is_array($query) && !is_array($query[0]))
         {
             $query = array('conditions' => array('id = ?', $query));
         }
 
-        if (isset($query[0]) && is_array($query[0]) && ! array_key_exists('conditions', $query))
+        if (isset($query[0]) && is_array($query[0]) && !array_key_exists('conditions', $query))
         {
             $query['conditions'] = array();
         }
@@ -378,7 +421,7 @@ class Utils
         $query['conditions'][0] = empty($query['conditions'][0]) ? $condition : '(' . $query['conditions'][0] . ') AND ' . $condition;
 
 
-        //  var_dump($query);
+
         $query = array($query);
         if ($all)
         {
@@ -386,9 +429,9 @@ class Utils
         }
     }
 
-    public static function appendJoin (&$query, $join)
+    public static function appendJoin(&$query, $join)
     {
-        if ( ! empty($query['joins']) && ! is_array($query['joins']))
+        if (!empty($query['joins']) && !is_array($query['joins']))
         {
             $query['joins'] = array($query['joins']);
         }

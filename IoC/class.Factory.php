@@ -62,6 +62,7 @@ class Factory
         }
 
         $reflectionClass = new \ReflectionClass($class);
+
         return $reflectionClass->newInstanceArgs($args);
     }
 

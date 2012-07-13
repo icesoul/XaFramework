@@ -2,7 +2,7 @@
 
 namespace Xa\Request;
 
-class Post extends Base
+class Post extends Base implements \Xa\Request\Interfaces\Post
 {
 
     protected  $_data = array();

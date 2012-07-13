@@ -13,28 +13,26 @@ class Validator
     public function __construct($value)
     {
         $this->_value = $value;
-      //  $this->_translate = $this->_index = $index;
+        //  $this->_translate = $this->_index = $index;
     }
 
     public function safe()
     {
-        $this->_value = trim(
-            \str_replace(array("'", "\"", "`", "\r", "\n"), array('&quot;', '&#x27;', '&#x60;', '', ''), \htmlspecialchars($this->_value)));
+        $this->_value = trim(\str_replace(array("'", "\"", "`", "\r", "\n"), array('&quot;', '&#x27;', '&#x60;', '', ''), \htmlspecialchars($this->_value)));
 
         return $this;
     }
 
     public function safeMultiline()
     {
-        $this->_value = trim(
-            \str_replace(array("'", "\"", "`"), array('&quot;', '&#x27;', '&#x60;', '', ''), \htmlspecialchars($this->_value)));
+        $this->_value = trim(\str_replace(array("'", "\"", "`"), array('&quot;', '&#x27;', '&#x60;', '', ''), \htmlspecialchars($this->_value)));
         return $this;
     }
 
     public function safeHtml($allowTags = null)
     {
         $this->_value = \str_replace(array("'", "\"", "`"), array('&quot;', '&#x27;', '&#x60;', '', ''), $this->_value);
-        $this->_value = $allowTags ? strip_tags($this->_value, $allowTags) : $allowTags;
+        $this->_value = $allowTags ? strip_tags($this->_value, $allowTags) : $this->_value;
 
 
         return $this;
@@ -61,9 +59,7 @@ class Validator
     }
 
     /**
-     *
      * @param string $pattern
-     *
      * @return \Core\RequestSpeller
      */
     public function vRegexp($pattern)
@@ -88,7 +84,6 @@ class Validator
     }
 
     /**
-     *
      * @return \Core\RequestSpeller
      */
     public function vNumber()
@@ -106,7 +101,6 @@ class Validator
     }
 
     /**
-     *
      * @return \Core\RequestSpeller
      */
     public function range($min, $max)
@@ -142,7 +136,6 @@ class Validator
     }
 
     /**
-     *
      * @return \Core\RequestSpeller
      */
     public function min($min)
@@ -158,7 +151,6 @@ class Validator
     }
 
     /**
-     *
      * @return \Core\RequestSpeller
      */
     public function max($max)
@@ -208,7 +200,9 @@ class Validator
             static::$_errors[] = $this->_translate . ' - ' . $error;
             return;
         }
-        throw new Exceptions\RequestInvalidData($this->_translate . ' - ' . $error);
+        $ex = new Exceptions\RequestInvalidData($this->_translate . ' - ' . $error);
+        $ex->setIndex($index);
+        throw $ex;
     }
 
     public function setIndex($index)

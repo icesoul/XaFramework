@@ -7,14 +7,9 @@ use \Iterator;
 /**
  *  Messages storage (Flash messages)
  */
-class Messager implements Iterator
+class Messager implements Iterator, \Xa\Interfaces\Messager
 {
 
-    const ok = 'success';
-    const warning = 'error';
-    const notice = 'warning';
-    const nextRoute = 'send';
-    const online = 'append';
 
     protected $_messages = array();
 
