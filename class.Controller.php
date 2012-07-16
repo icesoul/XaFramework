@@ -12,14 +12,13 @@ abstract class Controller
     static $_beforeUrl;
 
     /**
-     *
      * @var \Xa\View
      */
     protected $_view;
     protected $_handler;
     protected $_called;
 
-    public $Router;
+    protected $Router;
 
     public function preroute($handler)
     {
@@ -66,7 +65,6 @@ abstract class Controller
             $name = $param->name;
 
 
-
             $canEmpty = $param->isDefaultValueAvailable();
             $isEmpty = empty($args[$name]);
 
@@ -87,7 +85,7 @@ abstract class Controller
             }
         }
         ;
-        if ($ctrlData =  \Xa\IoC\Container::getInstance()->getObject('Xa\Interfaces\Router')->getByController('\\' . $namespace))
+        if ($ctrlData = \Xa\IoC\Container::getInstance()->getObject('Xa\Interfaces\Router')->getByController('\\' . $namespace))
         {
             $prepost = $ctrlData['prepost'];
         }

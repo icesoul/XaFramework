@@ -73,6 +73,7 @@ class Router implements \Xa\Interfaces\Router
 
                 if ($this->call($dest) === false)
                 {
+
                     continue;
                 }
                 else

@@ -53,10 +53,13 @@ class Auth implements \Xa\Lib\Client\Interfaces\Auth
         $user = $class::check($_SESSION['uid']);
 
 
-        if ($user->getAuthKey() != $_SESSION['hash'])
+        if (!$user || $user->getAuthKey() != $_SESSION['hash'])
         {
-            $user->setAuthKey(null);
-            $user->store();
+            if ($user)
+            {
+                $user->setAuthKey(null);
+                $user->store();
+            }
             $this->quit();
         }
         else
